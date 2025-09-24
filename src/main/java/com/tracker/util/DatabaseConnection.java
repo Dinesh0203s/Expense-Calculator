@@ -1,4 +1,4 @@
-package com.todo.util;
+package com.tracker.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

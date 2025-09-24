@@ -1,6 +1,6 @@
-package com.todo;
-import com.todo.gui.expenseTrackerAppGUI;
-import com.todo.util.DatabaseConnection;
+package com.tracker;
+import com.tracker.gui.ExpenseAppGUI;
+import com.tracker.util.DatabaseConnection;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -30,7 +30,7 @@ public class Main {
         SwingUtilities.invokeLater(
             ()->{
                 try {
-                    new expenseTrackerAppGUI().setVisible(true);
+                    new ExpenseAppGUI().setVisible(true);
                 }
                 catch (Exception e) {
                     System.err.println(e.getMessage());
