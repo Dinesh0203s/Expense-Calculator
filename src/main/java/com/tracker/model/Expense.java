@@ -1,18 +1,18 @@
 package com.tracker.model;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class Expense {
     private int id;
     private int amount;
     private String description;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private Timestamp created_at;
+    private Timestamp updated_at;
     private int category_id;
 
     public Expense(){
-        this.created_at = LocalDateTime.now();
-        this.updated_at = LocalDateTime.now();
+        this.created_at = new Timestamp(System.currentTimeMillis());
+        this.updated_at = new Timestamp(System.currentTimeMillis());
     }
 
     public Expense(int amount, String description, int category_id){
@@ -28,7 +28,7 @@ public class Expense {
         this.category_id = category_id;
     }
 
-    public Expense(int id, int amount, String description, int category_id, LocalDateTime created_at, LocalDateTime updated_at){
+    public Expense(int id, int amount, String description, int category_id, Timestamp created_at, Timestamp updated_at){
         this.id = id;
         this.amount = amount;
         this.description = description;
@@ -59,17 +59,17 @@ public class Expense {
         this.description = description; 
     }
     
-    public LocalDateTime getCreated_at() { 
+    public Timestamp getCreated_at() { 
         return created_at; 
     }
-    public void setCreated_at(LocalDateTime created_at) { 
+    public void setCreated_at(Timestamp created_at) { 
         this.created_at = created_at; 
     }
     
-    public LocalDateTime getUpdated_at() { 
+    public Timestamp getUpdated_at() { 
         return updated_at; 
     }
-    public void setUpdated_at(LocalDateTime updated_at) {
+    public void setUpdated_at(Timestamp updated_at) {
          this.updated_at = updated_at;
          }
     
