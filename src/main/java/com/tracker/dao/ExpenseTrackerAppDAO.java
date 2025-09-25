@@ -8,12 +8,18 @@ import com.tracker.util.DatabaseConnection;
 
 public class ExpenseTrackerAppDAO {
     
+    // SQL Statements
+    private static final String GET_ALL_EXPENSES = "SELECT * FROM expensetracker ORDER BY Created_at DESC";
+    private static final String ADD_EXPENSE = "INSERT INTO expensetracker (Amount, Description, CategoryId) VALUES (?, ?, ?)";
+    private static final String UPDATE_EXPENSE = "UPDATE expensetracker SET Amount = ?, Description = ?, CategoryId = ?, Updated_at = CURRENT_TIMESTAMP WHERE Id = ?";
+    private static final String DELETE_EXPENSE = "DELETE FROM expensetracker WHERE Id = ?";
+    private static final String GET_EXPENSES_BY_CATEGORY = "SELECT e.* FROM expensetracker e JOIN category c ON e.CategoryId = c.id WHERE c.Name = ? ORDER BY e.Created_at DESC";
+    
     public List<Expense> getAllExpenses() throws SQLException {
         List<Expense> expenses = new ArrayList<>();
-        String sql = "SELECT * FROM expensetracker ORDER BY Created_at DESC";
         
         try (Connection conn = DatabaseConnection.getDBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
+             PreparedStatement stmt = conn.prepareStatement(GET_ALL_EXPENSES);
              ResultSet rs = stmt.executeQuery()) {
             
             while (rs.next()) {
@@ -31,10 +37,8 @@ public class ExpenseTrackerAppDAO {
     }
     
     public void addExpense(Expense expense) throws SQLException {
-        String sql = "INSERT INTO expensetracker (Amount, Description, CategoryId) VALUES (?, ?, ?)";
-        
         try (Connection conn = DatabaseConnection.getDBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(ADD_EXPENSE)) {
             
             stmt.setInt(1, expense.getAmount());
             stmt.setString(2, expense.getDescription());
@@ -44,10 +48,8 @@ public class ExpenseTrackerAppDAO {
     }
     
     public void updateExpense(Expense expense) throws SQLException {
-        String sql = "UPDATE expensetracker SET Amount = ?, Description = ?, CategoryId = ?, Updated_at = CURRENT_TIMESTAMP WHERE Id = ?";
-        
         try (Connection conn = DatabaseConnection.getDBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(UPDATE_EXPENSE)) {
             
             stmt.setInt(1, expense.getAmount());
             stmt.setString(2, expense.getDescription());
@@ -58,10 +60,8 @@ public class ExpenseTrackerAppDAO {
     }
     
     public void deleteExpense(Expense expense) throws SQLException {
-        String sql = "DELETE FROM expensetracker WHERE Id = ?";
-        
         try (Connection conn = DatabaseConnection.getDBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(DELETE_EXPENSE)) {
             
             stmt.setInt(1, expense.getId());
             stmt.executeUpdate();
@@ -70,10 +70,9 @@ public class ExpenseTrackerAppDAO {
     
     public List<Expense> getExpensesByCategory(String categoryName) throws SQLException {
         List<Expense> expenses = new ArrayList<>();
-        String sql = "SELECT e.* FROM expensetracker e JOIN category c ON e.CategoryId = c.id WHERE c.Name = ? ORDER BY e.Created_at DESC";
         
         try (Connection conn = DatabaseConnection.getDBConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(GET_EXPENSES_BY_CATEGORY)) {
             
             stmt.setString(1, categoryName);
             try (ResultSet rs = stmt.executeQuery()) {

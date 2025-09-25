@@ -15,6 +15,7 @@ import com.tracker.util.DatabaseConnection;
 import com.tracker.dao.CategoryAPPDAO;
 
 import java.util.Date;
+import java.sql.SQLException;
 public class ExpenseAppGUI extends JFrame {
     private JButton addButton;
     private ExpenseTrackerAppGUI expenseTrackerAppGUI;
@@ -407,10 +408,194 @@ private void loadExpenses() {
 
 }
 class CategoryAppGUI extends JFrame {
+    private CategoryAPPDAO categoryAppDAO;
+    private JTable categoryTable;
+    private DefaultTableModel tableModel;
+    private JTextField categoryNameField;
+    private JButton addButton, deleteButton, editButton, refreshButton, closeButton;
+    
+    
     public CategoryAppGUI() {
+        categoryAppDAO = new CategoryAPPDAO();
+        categoryTable = new JTable();
+        tableModel = new DefaultTableModel();
+        initializeComponents();
+        setupComponents();
+        setupEventListeners();
+        loadCategories();
+    }
+    private void initializeComponents() {
         setTitle("Category Management");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1000, 1000);
         setLocationRelativeTo(null);
+
+        // Initialize table model and table
+        String[] columnNames = {"ID", "Category Name"};
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        categoryTable = new JTable(tableModel);
+        categoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        // Initialize input field
+        categoryNameField = new JTextField(25);
+
+        // Initialize buttons
+        addButton = new JButton("Add");
+        deleteButton = new JButton("Delete");
+        editButton = new JButton("Edit");
+        refreshButton = new JButton("Refresh");
+        closeButton = new JButton("Exit");
     }
+    
+    private void setupComponents() {
+        setLayout(new BorderLayout());
+
+        // Input panel for category name
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Category name input
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputPanel.add(new JLabel("Category Name:"), gbc);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        inputPanel.add(categoryNameField, gbc);
+
+        // Button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.add(addButton);
+        buttonPanel.add(editButton);
+        buttonPanel.add(deleteButton);
+        buttonPanel.add(refreshButton);
+        buttonPanel.add(closeButton);
+
+        // North panel to combine input and button panels
+        JPanel northPanel = new JPanel(new BorderLayout());
+        northPanel.add(inputPanel, BorderLayout.CENTER);
+        northPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        add(northPanel, BorderLayout.NORTH);
+        add(new JScrollPane(categoryTable), BorderLayout.CENTER);
+
+        JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        statusPanel.add(new JLabel("Select a category to edit or delete:"));
+        add(statusPanel, BorderLayout.SOUTH);
+    }
+
+    private void setupEventListeners() {
+        addButton.addActionListener(e -> addCategory());
+        deleteButton.addActionListener(e -> deleteCategory());
+        editButton.addActionListener(e -> updateCategory());
+        refreshButton.addActionListener(e -> refreshCategory());
+        closeButton.addActionListener(e -> dispose());
+        categoryTable.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting()) {
+                loadSelectedCategory();
+            }
+        });
+    }
+
+    private void addCategory() {
+        String categoryName = categoryNameField.getText().trim();
+        if (categoryName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a category name", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            Category category = new Category(categoryName);
+            categoryAppDAO.addCategory(category);
+            loadCategories();
+            categoryNameField.setText("");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error adding category: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    private void deleteCategory() {
+        int row = categoryTable.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a category to delete", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            int categoryId = (Integer) tableModel.getValueAt(row, 0);
+            categoryAppDAO.deleteCategory(categoryId);
+            loadCategories();
+            categoryNameField.setText("");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error deleting category: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    private void updateCategory() {
+        int row = categoryTable.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a category to update", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        String categoryName = categoryNameField.getText().trim();
+        if (categoryName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a category name", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            int categoryId = (Integer) tableModel.getValueAt(row, 0);
+            Category category = new Category(categoryId, categoryName);
+            categoryAppDAO.updateCategory(category);
+            loadCategories();
+            categoryNameField.setText("");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error updating category: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    private void refreshCategory() {
+        loadCategories();
+    }
+    private void loadCategories() {
+        try {
+            List<Category> categories = categoryAppDAO.getAllCategories();
+            updateTable(categories);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error loading categories: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    private void updateTable(List<Category> categories) {
+        tableModel.setRowCount(0);
+        for (Category category : categories) {
+            Object[] row = {
+                category.getId(),
+                category.getCategory_name()
+            };
+            tableModel.addRow(row);
+        }
+    }
+    
+    private void loadSelectedCategory() {
+        int row = categoryTable.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        
+        try {
+            String categoryName = tableModel.getValueAt(row, 1).toString();
+            categoryNameField.setText(categoryName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
 }
