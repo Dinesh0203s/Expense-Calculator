@@ -157,7 +157,7 @@ private void setupComponents() {
     // Title
     gbc.gridx = 0;
     gbc.gridy = 0;
-    inputPanel.add(new JLabel("Title:"), gbc);
+    inputPanel.add(new JLabel("Amount:"), gbc);
     gbc.gridx = 1;
     gbc.fill = GridBagConstraints.HORIZONTAL;
     inputPanel.add(titleField, gbc);
