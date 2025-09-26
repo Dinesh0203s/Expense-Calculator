@@ -4,12 +4,12 @@ A Java Swing-based desktop application for tracking personal expenses with MySQL
 
 ## Features
 
-### 🏠 Main Dashboard
+### Main Dashboard
 - Clean and intuitive main menu with two primary functions:
   - **Expense Tracker**: Manage your daily expenses
   - **Category Management**: Organize expenses by categories
 
-### 💰 Expense Management
+### Expense Management
 - **Add Expenses**: Record new expenses with amount, description, and category
 - **Edit Expenses**: Update existing expense records
 - **Delete Expenses**: Remove unwanted expense entries
@@ -17,13 +17,13 @@ A Java Swing-based desktop application for tracking personal expenses with MySQL
 - **Refresh Data**: Reload expense data from database
 - **Real-time Table Display**: View all expenses in a sortable table format
 
-### 📂 Category Management
+### Category Management
 - **Add Categories**: Create new expense categories (e.g., Food, Transportation, Entertainment)
 - **Edit Categories**: Modify existing category names
 - **Delete Categories**: Remove unused categories
 - **Category List**: View all available categories
 
-### 🗄️ Database Integration
+### Database Integration
 - **MySQL Database**: Persistent storage for all data
 - **Automatic Timestamps**: Tracks creation and update times
 - **Data Validation**: Ensures data integrity and consistency
