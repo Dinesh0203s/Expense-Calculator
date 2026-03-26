@@ -13,7 +13,7 @@ public class ExpenseTrackerAppDAO {
     private static final String ADD_EXPENSE = "INSERT INTO expensetracker (Amount, Description, CategoryId) VALUES (?, ?, ?)";
     private static final String UPDATE_EXPENSE = "UPDATE expensetracker SET Amount = ?, Description = ?, CategoryId = ?, Updated_at = CURRENT_TIMESTAMP WHERE Id = ?";
     private static final String DELETE_EXPENSE = "DELETE FROM expensetracker WHERE Id = ?";
-    private static final String GET_EXPENSES_BY_CATEGORY = "SELECT e.* FROM expensetracker e JOIN category c ON e.CategoryId = c.id WHERE c.Name = ? ORDER BY e.Created_at DESC";
+    private static final String GET_EXPENSES_BY_CATEGORY = "SELECT e.* FROM expensetracker e JOIN category c ON e.CategoryId = c.id WHERE c.Name = ? ORDER BY e.Created_at DESC"; // This is already using a parameterized query, which is good practice. However, ensure that the input is properly validated and sanitized before passing it to the query.
     
     public List<Expense> getAllExpenses() throws SQLException {
         List<Expense> expenses = new ArrayList<>();
@@ -59,7 +59,7 @@ public class ExpenseTrackerAppDAO {
         }
     }
     
-    public void deleteExpense(Expense expense) throws SQLException {
+    public void deleteExpense(Expense expense, int userId) throws SQLException { // Add a check to ensure the user deleting the expense is the owner of the expense.
         try (Connection conn = DatabaseConnection.getDBConnection();
              PreparedStatement stmt = conn.prepareStatement(DELETE_EXPENSE)) {
             
