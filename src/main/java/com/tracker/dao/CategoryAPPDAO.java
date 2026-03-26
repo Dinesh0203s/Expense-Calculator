@@ -14,6 +14,7 @@ public class CategoryAPPDAO {
     // SQL Statements
     private static final String GET_ALL_CATEGORIES = "SELECT * FROM category";
     private static final String ADD_CATEGORY = "INSERT INTO category (Name) VALUES (?)";
+// Validate user input before executing the query
     private static final String UPDATE_CATEGORY = "UPDATE category SET Name = ? WHERE id = ?";
     private static final String DELETE_CATEGORY = "DELETE FROM category WHERE id = ?";
     public List<Category> getAllCategories() throws SQLException {
