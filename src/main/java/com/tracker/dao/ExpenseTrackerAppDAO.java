@@ -14,6 +14,7 @@ public class ExpenseTrackerAppDAO {
     private static final String UPDATE_EXPENSE = "UPDATE expensetracker SET Amount = ?, Description = ?, CategoryId = ?, Updated_at = CURRENT_TIMESTAMP WHERE Id = ?";
     private static final String DELETE_EXPENSE = "DELETE FROM expensetracker WHERE Id = ?";
     private static final String GET_EXPENSES_BY_CATEGORY = "SELECT e.* FROM expensetracker e JOIN category c ON e.CategoryId = c.id WHERE c.Name = ? ORDER BY e.Created_at DESC";
+// Add input validation and sanitization for 'categoryName' parameter
     
     public List<Expense> getAllExpenses() throws SQLException {
         List<Expense> expenses = new ArrayList<>();
