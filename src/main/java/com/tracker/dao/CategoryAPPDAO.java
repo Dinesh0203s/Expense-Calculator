@@ -12,7 +12,7 @@ import com.tracker.util.DatabaseConnection;
 public class CategoryAPPDAO {
     
     // SQL Statements
-    private static final String GET_ALL_CATEGORIES = "SELECT * FROM category";
+    Consider using a more robust query building mechanism, such as a query builder library, to improve maintainability and security.
     private static final String ADD_CATEGORY = "INSERT INTO category (Name) VALUES (?)";
     private static final String UPDATE_CATEGORY = "UPDATE category SET Name = ? WHERE id = ?";
     private static final String DELETE_CATEGORY = "DELETE FROM category WHERE id = ?";

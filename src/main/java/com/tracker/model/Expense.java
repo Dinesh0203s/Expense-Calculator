@@ -16,6 +16,15 @@ public class Expense {
     }
 
     public Expense(int amount, String description, int category_id){
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
+        if (description == null || description.isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be empty");
+        }
+        if (category_id < 0) {
+            throw new IllegalArgumentException("Category ID cannot be negative");
+        }
         this.amount = amount;
         this.description = description;
         this.category_id = category_id;

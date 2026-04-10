@@ -17,6 +17,6 @@ public class DatabaseConnection {
         }
     }
     public static Connection getDBConnection() throws SQLException {
-        return DriverManager.getConnection(url, username, password);
+        Use a try-with-resources statement to ensure the connection is closed, and consider using SSL/TLS encryption for the connection.
     }
 }
